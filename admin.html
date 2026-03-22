@@ -90,8 +90,8 @@
                 <button onclick="resetAllData()" class="submit-btn" style="background: white; color: var(--danger); border: 1px solid var(--danger); width: auto; padding: 0.5rem 1rem; font-size: 0.95rem;">
                     <i class='bx bx-trash'></i> ล้างข้อมูล
                 </button>
-                <button id="logoutBtn" class="submit-btn" style="width: auto; padding: 0.5rem 1rem; background: var(--danger); font-size: 0.95rem;">
-                    <i class='bx bx-log-out'></i> ออกจากระบบ
+                <button onclick="resetRanking()" class="submit-btn" style="width: auto; padding: 0.5rem 1rem; background: var(--danger); font-size: 0.95rem;">
+                    <i class='bx bx-reset'></i> รีเซ็ตอันดับ
                 </button>
             </div>
         </header>
@@ -111,7 +111,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const supabaseUrl = 'https://fvzcusbcleyytjnyzgib.supabase.co';
-            const supabaseKey = 'sb_publishable_ZFBeEQ9zscS-MNLwhSbZQ_KGgQJMHf';
+            const supabaseKey = 'sb_publishable_ZFBeEQ9zscxS-MNLwhSbZQ_KGgQJMHf';
             const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
             // --- Theme Logic ---
             const themes = ['light', 'dark', 'pink'];
@@ -172,8 +172,36 @@
                         // Initial Render
                         renderTable();
                         
-                        window.resetAllData = async function() {
-                if(confirm('🚨 คำเตือน: คุณแน่ใจหรือไม่ว่าต้องการ "ล้างข้อมูลทั้งหมด" ออกจากระบบ? ข้อมูลอันดับทั้งหมดจะถูกรีเซ็ตกลับเป็น 0')) {
+            // Auto refresh roughly every 30 seconds
+            setInterval(renderTable, 30000);
+                    }, 500);
+                }, 800);
+            });
+            
+            window.resetRanking = async function() {
+                if(confirm('ยืนยันการเคลียร์อันดับหน้าเว็บให้กลับเป็น 0? (รายการแจ้งปัญหาด้านล่างจะยังคงอยู่ครบถ้วน)')) {
+                    try {
+                        const { error } = await supabaseClient
+                            .from('wifi_reports')
+                            .insert([{
+                                username: 'SYSTEM',
+                                location: 'SYSTEM_RESET',
+                                room: '-',
+                                problem: 'RESET',
+                                signal_level: 0,
+                                details: new Date().toISOString()
+                            }]);
+                        if (error) throw error;
+                        alert('รีเซ็ตอันดับหน้าเว็ปกลับเป็น 0 เรียบร้อยแล้ว!');
+                    } catch (error) {
+                        console.error('Error resetting rank:', error);
+                        alert('เกิดข้อผิดพลาดในการรีเซ็ตอันดับ');
+                    }
+                }
+            };
+
+            window.resetAllData = async function() {
+                if(confirm('🚨 คำเตือน: ต้องการ "ล้างข้อมูลทั้งหมด" ออกจากระบบ? (รายงานทั้งหมดจะหายไปกู้คืนไม่ได้)')) {
                     if (confirm('กรุณายืนยันการลบทิ้งทั้งหมดอีกครั้ง (ลบแล้วกู้คืนไม่ได้)')) {
                         try {
                             const { error } = await supabaseClient
@@ -182,8 +210,6 @@
                                 .gt('id', 0);
                             
                             if (error) throw error;
-                            
-                            // showToast('ล้างข้อมูลทั้งหมดออกจากระบบเรียบร้อยแล้ว'); // Assuming showToast is defined elsewhere or not needed
                             alert('ล้างข้อมูลทั้งหมดออกจากระบบเรียบร้อยแล้ว');
                             renderTable();
                         } catch (error) {
@@ -193,12 +219,6 @@
                     }
                 }
             };
-            
-            // Auto refresh roughly every 30 seconds
-            setInterval(renderTable, 30000);
-                    }, 500);
-                }, 800);
-            });
 
             const listContainer = document.getElementById('issuesListContainer');
             const clearBtn = document.getElementById('clearDataBtn');
@@ -226,6 +246,7 @@
                     }
                     
                     issues.forEach(issue => {
+                        if (issue.location === 'SYSTEM_RESET') return;
                         let badgeClass = 'badge-success';
                         const signal = parseInt(issue.signal_level || issue.signal);
                         if (signal <= 2) badgeClass = 'badge-danger';

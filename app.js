@@ -180,12 +180,23 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadDashboardData() {
         const { data: issues, error } = await supabaseClient
             .from('wifi_reports')
-            .select('location');
+            .select('*');
         if (!error && issues) {
+            const resetRows = issues.filter(i => i.location === 'SYSTEM_RESET');
+            let resetTime = 0;
+            if (resetRows.length > 0) {
+                const latestReset = resetRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+                resetTime = new Date(latestReset.created_at).getTime();
+            }
+
             // Reset counts
             topSpots.forEach(s => s.count = 0);
             
             issues.forEach(issue => {
+                if (issue.location === 'SYSTEM_RESET') return;
+                const issueTime = new Date(issue.created_at).getTime();
+                if (issueTime < resetTime) return;
+
                 const loc = issue.location;
                 const spot = topSpots.find(s => s.name === loc);
                 if (spot) {
