@@ -177,6 +177,7 @@
                     const { data: issues, error } = await supabaseClient
                         .from('wifi_reports')
                         .select('*')
+                        .neq('status', 'deleted')
                         .order('created_at', { ascending: false });
                         
                     if (error) throw error;
@@ -266,10 +267,10 @@
                     document.querySelectorAll('.delete-issue').forEach(btn => {
                         btn.onclick = async (e) => {
                             const id = e.currentTarget.getAttribute('data-id');
-                            if(confirm('ต้องการลบปัญหานี้ออกจากระบบหรือไม่?')) {
+                            if(confirm('ต้องการซ่อนปัญหานี้ออกจากหน้าจอแอดมิน (ข้อมูลในระบบยังมีอยู่) หรือไม่?')) {
                                 await supabaseClient
                                     .from('wifi_reports')
-                                    .delete()
+                                    .update({ status: 'deleted' })
                                     .eq('id', id);
                                 renderTable();
                             }

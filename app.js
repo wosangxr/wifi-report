@@ -190,7 +190,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadDashboardData() {
-        const { data: issues, error } = await supabaseClient.from('wifi_reports').select('location');
+        const { data: issues, error } = await supabaseClient
+            .from('wifi_reports')
+            .select('location')
+            .neq('status', 'deleted');
         if (!error && issues) {
             // Reset counts
             topSpots.forEach(s => s.count = 0);
