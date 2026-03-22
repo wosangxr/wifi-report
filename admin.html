@@ -343,7 +343,22 @@
 
             document.getElementById('floatingLogoutBtn').addEventListener('click', () => {
                 if(confirm('ต้องการออกจากระบบผู้ดูแลหรือไม่?')) {
-                    window.location.reload();
+                    // Hide dashboard and logout button
+                    adminAppContainer.style.display = 'none';
+                    document.getElementById('floatingLogoutBtn').style.display = 'none';
+                    
+                    // Show login container smoothly
+                    adminLoginContainer.classList.remove('fade-out-up');
+                    adminLoginContainer.style.display = 'flex';
+                    adminLoginContainer.style.animation = 'fadeIn 0.6s ease-out forwards';
+                    
+                    // Reset login form state
+                    document.getElementById('adminUsername').value = '';
+                    document.getElementById('adminPassword').value = '';
+                    const btn = adminLoginForm.querySelector('.login-btn');
+                    btn.innerHTML = `<span>เข้าสู่ระบบ</span><i class='bx bx-log-in-circle'></i>`;
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
                 }
             });
         });
