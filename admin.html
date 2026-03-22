@@ -73,19 +73,26 @@
 
     <!-- Main Admin Dashboard -->
     <div id="adminAppContainer" class="container" style="display: none;">
-        <header class="app-header" style="justify-content: space-between; flex-wrap: wrap;">
+        <header class="app-header" style="flex-wrap: wrap; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 1.5rem;">
-                <div class="header-icon" style="background: linear-gradient(135deg, var(--danger), var(--warning));">
+                <div class="header-icon" style="background: linear-gradient(135deg, var(--warning), var(--danger));">
                     <i class='bx bx-shield-quarter'></i>
                 </div>
                 <div class="header-text">
                     <h1>ผู้ดูแลระบบ</h1>
-                    <p>รายการแจ้งปัญหา (เรียลไทม์)</p>
+                    <p style="margin: 0;">รายการแจ้งปัญหา (เรียลไทม์)</p>
                 </div>
             </div>
-            <div class="nav-buttons" style="display: flex; align-items: center;">
-                <a href="index.html" class="btn-outline"><i class='bx bx-arrow-back'></i> กลับไปหน้ารายงาน</a>
-                <button id="clearDataBtn" class="btn-outline" style="border-color: var(--danger); color: var(--danger);"><i class='bx bx-trash'></i> ล้างข้อมูล</button>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.5rem;">
+                <a href="index.html" class="submit-btn" style="background: white; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; width: auto; padding: 0.5rem 1rem; font-size: 0.95rem;">
+                    <i class='bx bx-left-arrow-alt'></i> กลับไปหน้ารายงาน
+                </a>
+                <button onclick="resetAllData()" class="submit-btn" style="background: white; color: var(--danger); border: 1px solid var(--danger); width: auto; padding: 0.5rem 1rem; font-size: 0.95rem;">
+                    <i class='bx bx-trash'></i> ล้างข้อมูล
+                </button>
+                <button id="logoutBtn" class="submit-btn" style="width: auto; padding: 0.5rem 1rem; background: var(--danger); font-size: 0.95rem;">
+                    <i class='bx bx-log-out'></i> ออกจากระบบ
+                </button>
             </div>
         </header>
 
@@ -104,7 +111,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const supabaseUrl = 'https://fvzcusbcleyytjnyzgib.supabase.co';
-            const supabaseKey = 'sb_publishable_ZFBeEQ9zscxS-MNLwhSbZQ_KGgQJMHf';
+            const supabaseKey = 'sb_publishable_ZFBeEQ9zscS-MNLwhSbZQ_KGgQJMHf';
             const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
             // --- Theme Logic ---
             const themes = ['light', 'dark', 'pink'];
@@ -165,8 +172,30 @@
                         // Initial Render
                         renderTable();
                         
-                        // Start auto update after login
-                        setInterval(renderTable, 5000);
+                        window.resetAllData = async function() {
+                if(confirm('🚨 คำเตือน: คุณแน่ใจหรือไม่ว่าต้องการ "ล้างข้อมูลทั้งหมด" ออกจากระบบ? ข้อมูลอันดับทั้งหมดจะถูกรีเซ็ตกลับเป็น 0')) {
+                    if (confirm('กรุณายืนยันการลบทิ้งทั้งหมดอีกครั้ง (ลบแล้วกู้คืนไม่ได้)')) {
+                        try {
+                            const { error } = await supabaseClient
+                                .from('wifi_reports')
+                                .delete()
+                                .gt('id', 0);
+                            
+                            if (error) throw error;
+                            
+                            // showToast('ล้างข้อมูลทั้งหมดออกจากระบบเรียบร้อยแล้ว'); // Assuming showToast is defined elsewhere or not needed
+                            alert('ล้างข้อมูลทั้งหมดออกจากระบบเรียบร้อยแล้ว');
+                            renderTable();
+                        } catch (error) {
+                            console.error('Error resetting dataset:', error);
+                            alert('เกิดข้อผิดพลาดในการล้างข้อมูล');
+                        }
+                    }
+                }
+            };
+            
+            // Auto refresh roughly every 30 seconds
+            setInterval(renderTable, 30000);
                     }, 500);
                 }, 800);
             });

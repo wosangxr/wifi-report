@@ -149,21 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Dashboard Data ---
-    const topSpots = [
-        { name: "อาคาร1", count: 0, rank: 1 },
-        { name: "อาคาร2", count: 0, rank: 2 },
-        { name: "อาคาร3", count: 0, rank: 3 },
-        { name: "อาคารอเนกประสงค์", count: 0, rank: 4 },
-        { name: "อาคาร4", count: 0, rank: 5 },
-        { name: "อาคาร5", count: 0, rank: 6 },
-        { name: "อาคาร6", count: 0, rank: 7 },
-        { name: "อาคารศูนย์อาหาร1", count: 0, rank: 8 },
-        { name: "อาคารสำนักงานกลาง", count: 0, rank: 9 },
-        { name: "อาคาร9", count: 0, rank: 10 },
-        { name: "อาคาร10", count: 0, rank: 11 },
-        { name: "อาคาร11", count: 0, rank: 12 },
-        { name: "อาคารศูนย์มีเดีย", count: 0, rank: 13 }
-    ];
+    // Form Elements
+    const locationOptions = ["อาคาร1", "อาคาร2", "อาคาร3", "อาคารอเนกประสงค์", "อาคาร4", "อาคาร5", "อาคาร6", "อาคารศูนย์อาหาร1", "อาคารสำนักงานกลาง", "อาคาร9", "อาคาร10", "อาคาร11", "อาคารศูนย์มีเดีย", "อื่นๆ"];
+    let topSpots = locationOptions.map((loc, index) => ({ name: loc, count: 0, rank: index + 1 }));
 
     const spotsList = document.getElementById('topSpotsList');
     
@@ -192,8 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadDashboardData() {
         const { data: issues, error } = await supabaseClient
             .from('wifi_reports')
-            .select('location')
-            .neq('status', 'deleted');
+            .select('location');
         if (!error && issues) {
             // Reset counts
             topSpots.forEach(s => s.count = 0);
