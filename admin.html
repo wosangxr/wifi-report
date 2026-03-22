@@ -205,21 +205,19 @@
             };
 
             window.resetAllData = async function() {
-                if(confirm('🚨 คำเตือน: ต้องการ "ล้างข้อมูลทั้งหมด" ออกจากระบบ? (รายงานทั้งหมดจะหายไปกู้คืนไม่ได้)')) {
-                    if (confirm('กรุณายืนยันการลบทิ้งทั้งหมดอีกครั้ง (ลบแล้วกู้คืนไม่ได้)')) {
-                        try {
-                            const { error } = await supabaseClient
-                                .from('wifi_reports')
-                                .delete()
-                                .gt('id', 0);
-                            
-                            if (error) throw error;
-                            alert('ล้างข้อมูลทั้งหมดออกจากระบบเรียบร้อยแล้ว');
-                            renderTable();
-                        } catch (error) {
-                            console.error('Error resetting dataset:', error);
-                            alert('เกิดข้อผิดพลาดในการล้างข้อมูล');
-                        }
+                if(confirm('ยืนยันการเคลียร์รายการแจ้งปัญหาออกจากหน้านี้หรือไม่? (ข้อมูลจริงจะยังคงถูกเก็บไว้ในฐานข้อมูลอย่างปลอดภัย)')) {
+                    try {
+                        const { error } = await supabaseClient
+                            .from('wifi_reports')
+                            .update({ status: 'deleted' })
+                            .neq('status', 'deleted');
+                        
+                        if (error) throw error;
+                        alert('เคลียร์รายการแจ้งปัญหาออกจากหน้าจอแอดมินเรียบร้อยแล้ว');
+                        renderTable();
+                    } catch (error) {
+                        console.error('Error clearing data from screen:', error);
+                        alert('เกิดข้อผิดพลาดในการเคลียร์หน้าจอ');
                     }
                 }
             };
