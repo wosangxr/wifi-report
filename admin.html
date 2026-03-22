@@ -225,7 +225,6 @@
             };
 
             const listContainer = document.getElementById('issuesListContainer');
-            const clearBtn = document.getElementById('clearDataBtn');
             
             async function renderTable() {
                 try {
@@ -337,9 +336,7 @@
                 }
             }
 
-            clearBtn.addEventListener('click', () => {
-                alert('ฟีเจอร์นี้ปิดใช้งานชั่วคราวเพื่อความปลอดภัยของฐานข้อมูล');
-            });
+
 
             document.getElementById('floatingLogoutBtn').addEventListener('click', () => {
                 if(confirm('ต้องการออกจากระบบผู้ดูแลหรือไม่?')) {
