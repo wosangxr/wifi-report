@@ -370,19 +370,16 @@ textarea { padding-left: 1rem; resize: vertical; }
 }
 
 .admin-login-btn {
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
-    background-color: rgba(244, 162, 97, 0.8); /* fallback if warning not defined, matching the screenshot closely */
+    display: inline-block;
+    background-color: rgba(244, 162, 97, 0.8);
     background: var(--warning, #f4a261);
     color: var(--dark, #2b2d42);
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.5rem;
     border-radius: 8px;
     text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 100;
     transition: all 0.3s ease;
 }
 
@@ -552,14 +549,7 @@ textarea { padding-left: 1rem; resize: vertical; }
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
-    .admin-login-btn {
-        top: 4rem;
-        right: 1rem;
-    }
     .login-container {
-        margin-top: 5rem;
-    }
-    .container {
-        margin-top: 4rem;
+        margin-top: 1rem;
     }
 }
