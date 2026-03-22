@@ -29,6 +29,9 @@
     <button id="globalThemeToggle" class="floating-theme-btn" title="เปลี่ยนธีม">
         <i class='bx bx-sun'></i>
     </button>
+    <button id="floatingLogoutBtn" class="floating-theme-btn" style="top: 1.5rem; right: 1.5rem; bottom: auto; background: var(--danger); color: white; display: none; border-color: transparent; z-index: 1000;" title="ออกจากระบบ">
+        <i class='bx bx-log-out'></i>
+    </button>
     <div class="bg-shapes">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
@@ -168,6 +171,7 @@
                         adminAppContainer.style.display = 'flex';
                         void adminAppContainer.offsetWidth; // trigger reflow
                         adminAppContainer.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                        document.getElementById('floatingLogoutBtn').style.display = 'flex';
                         
                         // Initial Render
                         renderTable();
@@ -335,6 +339,12 @@
 
             clearBtn.addEventListener('click', () => {
                 alert('ฟีเจอร์นี้ปิดใช้งานชั่วคราวเพื่อความปลอดภัยของฐานข้อมูล');
+            });
+
+            document.getElementById('floatingLogoutBtn').addEventListener('click', () => {
+                if(confirm('ต้องการออกจากระบบผู้ดูแลหรือไม่?')) {
+                    window.location.reload();
+                }
             });
         });
     </script>
