@@ -175,7 +175,7 @@
             async function renderTable() {
                 try {
                     const { data: issues, error } = await supabaseClient
-                        .from('issues')
+                        .from('wifi_reports')
                         .select('*')
                         .order('created_at', { ascending: false });
                         
@@ -257,7 +257,7 @@
                             const newStatus = currentStatus === 'resolved' ? 'pending' : 'resolved';
                             
                             await supabaseClient
-                                .from('issues')
+                                .from('wifi_reports')
                                 .update({ status: newStatus })
                                 .eq('id', id);
                             renderTable();
@@ -269,7 +269,7 @@
                             const id = e.currentTarget.getAttribute('data-id');
                             if(confirm('ต้องการลบปัญหานี้ออกจากระบบหรือไม่?')) {
                                 await supabaseClient
-                                    .from('issues')
+                                    .from('wifi_reports')
                                     .delete()
                                     .eq('id', id);
                                 renderTable();

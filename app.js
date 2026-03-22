@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadDashboardData() {
-        const { data: issues, error } = await supabaseClient.from('issues').select('location');
+        const { data: issues, error } = await supabaseClient.from('wifi_reports').select('location');
         if (!error && issues) {
             // Reset counts
             topSpots.forEach(s => s.count = 0);
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const { data: result, error } = await supabaseClient
-                .from('issues')
+                .from('wifi_reports')
                 .insert([
                     {
                         student_id: payload.student_id,
