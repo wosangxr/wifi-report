@@ -549,3 +549,17 @@ textarea { padding-left: 1rem; resize: vertical; }
 /* Utilities */
 .mx-auto { margin-left: auto; margin-right: auto; }
 .mt-4 { margin-top: 1.5rem; }
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .admin-login-btn {
+        top: 4rem;
+        right: 1rem;
+    }
+    .login-container {
+        margin-top: 5rem;
+    }
+    .container {
+        margin-top: 4rem;
+    }
+}
