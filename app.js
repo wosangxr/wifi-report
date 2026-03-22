@@ -257,12 +257,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('wifi_reports')
                 .insert([
                     {
-                        student_id: payload.student_id,
-                        fullname: payload.fullname,
+                        username: `${payload.student_id} - ${payload.fullname}`,
                         location: payload.location,
                         room: payload.room,
                         problem: payload.problem,
-                        signal: payload.signal,
+                        signal_level: payload.signal,
                         details: payload.details
                     }
                 ]);
